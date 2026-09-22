@@ -8,18 +8,10 @@ object GreetingRoutes {
     Routes(
       // GET /greet?name=:name
       Method.GET / "greet" -> handler { (req: Request) =>
-        if (req.url.queryParams.nonEmpty)
-          ZIO.succeed(
-            Response.text(
-              s"Hello ${req.url.queryParams("name").map(_.mkString(" and "))}!"
-            )
-          )
-        else
-          ZIO.fail(Response.badRequest("The name query parameter is missing!"))
+        val names    = req.url.queryParams("name").filter(_.trim.nonEmpty)
+        val greeting = if (names.nonEmpty) s"Hello ${names.mkString(" and ")}!" else "Hello World!"
+        ZIO.succeed(Response.text(greeting))
       },
-
-      // GET /greet
-      Method.GET / "greet" -> handler(Response.text(s"Hello World!")),
 
       // GET /greet/:name
       Method.GET / "greet" / string("name") -> handler {

@@ -13,8 +13,10 @@ enablePlugins(JavaAppPackaging)
 enablePlugins(DockerPlugin)
 
 dockerExposedPorts := Seq(8080)
-
-dockerBaseImage := "openjdk:17-jdk"
+dockerExposedVolumes := Seq("/data")
+dockerEnvVars := Map("JAVA_OPTS" -> "-Duserapp.data-dir=/data")
+Docker / version := "0.1.0"
+dockerBaseImage := "--platform=linux/arm64 eclipse-temurin:21-jre"
 
 dockerUsername   := sys.props.get("docker.username")
 dockerRepository := sys.props.get("docker.registry")
